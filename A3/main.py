@@ -5,12 +5,9 @@ import gymnasium as gym
 from gymnasium.spaces.discrete import Discrete
 
 import torch
-import torch.nn as nn
-from torch.distributions.normal import Normal
-from torch.distributions.categorical import Categorical
 from torch.optim import Adam
 
-from utils import count_vars, discount_cumsum, args_to_str
+from utils import count_vars, args_to_str
 from models import ActorCritic
 from pg_buffer import PGBuffer
 
@@ -51,7 +48,8 @@ def main(args):
         loss_pi = None # TODO: fix this
         if args.loss_mode == 'vpg':
             # TODO (Task 2): implement vanilla policy gradient loss
-            pass
+            ret = batch["ret"]
+            loss_pi = torch.sum(-logp * ret)
         elif args.loss_mode == 'ppo':
             # TODO (Task 4): implement clipped PPO loss
             pass
@@ -70,7 +68,7 @@ def main(args):
         obs, ret = batch['obs'], batch['ret']
         v = ac.v(obs)
         # TODO: (Task 2): compute value function loss
-        loss_v = None # TODO: fix this
+        loss_v = torch.sum((v - ret.unsqueeze(1))**2) # TODO: fix this
         return loss_v
 
     # Set up optimizers for policy and value function
