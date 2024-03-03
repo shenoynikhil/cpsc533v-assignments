@@ -48,8 +48,7 @@ def main(args):
         loss_pi = None # TODO: fix this
         if args.loss_mode == 'vpg':
             # TODO (Task 2): implement vanilla policy gradient loss
-            ret = batch["ret"]
-            loss_pi = torch.sum(-logp * ret)
+            loss_pi = torch.sum(-logp * psi)
         elif args.loss_mode == 'ppo':
             # TODO (Task 4): implement clipped PPO loss
             pass
